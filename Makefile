@@ -1,5 +1,7 @@
 .PHONY: clean terraform-archive terraform-projector
 
+CMD ?= plan
+
 TERRAFORM_MODULE_PATHS := micronaut-oci-hol-free-tier-account/terraform
 OCI_REGION := us-ashburn-1
 OS_NS := cloudnative-devrel
@@ -15,8 +17,8 @@ define upload_zip
 	oci os object put -ns ${OS_NS} -bn ${OS_BC} --file $1 --name $2 --region ${OCI_REGION}
 endef
 
-terraform-projector: CMD
-	terraform -chdir=micronaut-oci-hol-free-tier-account/terraform/jidea-image $CMD
+terraform-projector:
+	terraform -chdir=micronaut-oci-hol-free-tier-account/terraform/jidea-image $(CMD)
 
 terraform-archive: clean
 	echo "Creating terraform archives"

@@ -1,0 +1,181 @@
+title: "Create a VCN, Compute instance & ATP instance"
+stackDescription: "Description..."
+schemaVersion: 1.1.0
+version: "20200301"
+locale: "en"
+
+variableGroups:
+- title: ${Messages.solutionsHub.requiredConfig()}
+  visible: true  
+  variables:
+  - ssh_public_key
+
+- title: ${Messages.solutionsHub.optionalConfig()}
+  visible: true  
+  variables:
+  - shape
+
+variables:
+  ssh_public_key:
+    type: oci:core:ssh:publickey
+    additionalProps:
+      allowMultiple: true
+    required: false
+    default: [""]
+    pattern: "((^(ssh-rsa AAAAB3NzaC1yc2|ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNT|ecdsa-sha2-nistp384 AAAAE2VjZHNhLXNoYTItbmlzdHAzODQAAAAIbmlzdHAzOD|ecdsa-sha2-nistp521 AAAAE2VjZHNhLXNoYTItbmlzdHA1MjEAAAAIbmlzdHA1Mj|ssh-ed25519 AAAAC3NzaC1lZDI1NTE5|ssh-dss AAAAB3NzaC1kc3)[0-9A-Za-z+\/]+[=]{0,3})( [^,]*)?)(,((ssh-rsa AAAAB3NzaC1yc2|ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNT|ecdsa-sha2-nistp384 AAAAE2VjZHNhLXNoYTItbmlzdHAzODQAAAAIbmlzdHAzOD|ecdsa-sha2-nistp521 AAAAE2VjZHNhLXNoYTItbmlzdHA1MjEAAAAIbmlzdHA1Mj|ssh-ed25519 AAAAC3NzaC1lZDI1NTE5|ssh-dss AAAAB3NzaC1kc3)[0-9A-Za-z+\/]+[=]{0,3})( [^,]*)?)*$"
+    title: ${Messages.solutionsHub.solutions.computeInstance.variables.ssh_public_key.title()}
+    description: ${Messages.solutionsHub.solutions.computeInstance.variables.ssh_public_key.description()}
+
+  use_free_tier:
+    type: boolean
+    visible: false
+    required: false
+    title: "Use Always Free Tier?"
+    description: "Should this stack deploy on 'Always Free' resources? Uncheck if using a data center that does not have 'Always Free' capacity."
+
+  region:
+    type: oci:identity:region:name
+    visible: false
+    required: true
+    title: ${Messages.solutionsHub.genericVariables.region.title()}
+    description: ${Messages.solutionsHub.genericVariables.region.description()}
+
+  vcn_display_name:
+    type: string
+    visible: false
+    required: true
+    title: ${Messages.solutionsHub.solutions.defaultVCN.variables.vcn_display_name.title()}
+    description: ${Messages.solutionsHub.solutions.defaultVCN.variables.vcn_display_name.description()}
+
+  vcn_cidr:
+    type: string
+    visible: false
+    required: false
+    pattern: "^(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9]).(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9]).(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9]).(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\\/(3[0-2]|[1-2]?[0-9])$"
+    title: ${Messages.solutionsHub.solutions.defaultVCN.variables.vcn_cidr.title()}
+    description: ${Messages.solutionsHub.solutions.defaultVCN.variables.vcn_cidr.description()}
+
+  vcn_dns_label:
+    type: string
+    visible: false
+    required: false
+    pattern: "^[a-zA-Z][a-zA-Z0-9]{0,14}$"
+    title: ${Messages.solutionsHub.solutions.defaultVCN.variables.vcn_dns_label.title()}
+    description: ${Messages.solutionsHub.solutions.defaultVCN.variables.vcn_dns_label.description()}
+
+  subnet_dns_label:
+    type: string
+    visible: false
+    required: false
+    pattern: "^[a-zA-Z][a-zA-Z0-9]{0,14}$"
+    title: ${Messages.solutionsHub.solutions.defaultVCN.variables.subnet_dns_label.title()}
+    description: ${Messages.solutionsHub.solutions.defaultVCN.variables.subnet_dns_label.description()}
+
+  instance_display_name:
+    type: string
+    visible: false
+    required: true
+    default: "testCompute"
+    title: ${Messages.solutionsHub.solutions.computeInstance.variables.instance_display_name.title()}
+    description: ${Messages.solutionsHub.solutions.computeInstance.variables.instance_display_name.description()}
+
+  preserve_boot_volume:
+    type: boolean
+    visible: false
+    required: false
+    title: ${Messages.solutionsHub.solutions.computeInstance.variables.preserve_boot_volume.title()}
+    description: ${Messages.solutionsHub.solutions.computeInstance.variables.preserve_boot_volume.description()}
+    default: false
+
+  boot_volume_size_in_gbs:
+    type: number
+    visible: false
+    required: false
+    minimum: 50
+    maximum: 32768
+    default: 50
+    title: ${Messages.solutionsHub.solutions.computeInstance.variables.boot_volume_size_in_gbs.title()}
+    description: ${Messages.solutionsHub.solutions.computeInstance.variables.boot_volume_size_in_gbs.description()}
+
+  shape:
+    type: oci:core:instanceshape:name
+    required: true
+    title: ${Messages.solutionsHub.solutions.computeInstance.variables.shape.title()}
+    description: ${Messages.solutionsHub.solutions.computeInstance.variables.shape.description()}
+    default: "VM.Standard2.4"
+    dependsOn:
+      compartmentId: tenancy_ocid
+
+  dynamic_group_display_name:
+    type: string
+    visible: false
+    required: true
+    default: "testDynamicGroup"
+    title: "Dynamic group name prefix"
+    description: "Dynamic group name prefix"
+
+  tenancy_ocid:
+    visible: false
+
+  compartment_ocid:
+    visible: false
+
+  autonomous_database_db_workload:
+    visible: false
+
+  autonomous_database_license_model:
+    visible: false
+
+  autonomous_database_is_dedicated:
+    visible: false
+
+  assign_public_ip:
+    type: boolean
+    visible: false
+    required: false
+    title: ${Messages.solutionsHub.solutions.computeInstance.variables.assign_public_ip.title()}
+    description: ${Messages.solutionsHub.solutions.computeInstance.variables.assign_public_ip.description()}
+    default: true
+
+  vnic_name:
+    type: string
+    visible: false
+    required: false
+    default: myVNIC
+    title: ${Messages.solutionsHub.solutions.computeInstance.variables.vnic_name.title()}
+    description: ${Messages.solutionsHub.solutions.computeInstance.variables.vnic_name.description()}
+
+  instance_timeout:
+    type: string
+    visible: false
+    required: false
+    default: "25m"
+    title: ${Messages.solutionsHub.solutions.computeInstance.variables.instance_timeout.title()}
+    description: ${Messages.solutionsHub.solutions.computeInstance.variables.instance_timeout.description()}
+
+  attachment_type:
+    type: enum
+    visible: false
+    required: false
+    title: ${Messages.solutionsHub.solutions.computeInstance.variables.attachment_type.title()}
+    description: ${Messages.solutionsHub.solutions.computeInstance.variables.attachment_type.description()}
+    default: "iscsi"
+    enum:
+      - "iscsi"
+      - "paravirtualized"
+
+  autonomous_database_db_name:
+    type: string
+    visible: false
+    required: true
+    default: "mnociatp"
+    title: ${Messages.solutionsHub.solutions.autonomousTransactionProcessing.variables.autonomous_database_db_name.title()}
+    description: ${Messages.solutionsHub.solutions.autonomousTransactionProcessing.variables.autonomous_database_db_name.description()}
+
+  autonomous_database_display_name:
+    type: string
+    visible: false
+    required: true
+    default: "mnociatp"
+    title: ${Messages.solutionsHub.solutions.autonomousTransactionProcessing.variables.autonomous_database_display_name.title()}
+    description: ${Messages.solutionsHub.solutions.autonomousTransactionProcessing.variables.autonomous_database_display_name.description()}

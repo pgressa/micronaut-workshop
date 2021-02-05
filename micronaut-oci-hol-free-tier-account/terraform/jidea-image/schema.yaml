@@ -5,17 +5,31 @@ version: "20200301"
 locale: "en"
 
 variableGroups:
-- title: ${Messages.solutionsHub.requiredConfig()}
-  visible: true  
-  variables:
-  - ssh_public_key
-
 - title: ${Messages.solutionsHub.optionalConfig()}
   visible: true  
   variables:
   - shape
+  - ssh_public_key
+  - compartment_name
 
 variables:
+  compartment_name:
+    type: string
+    visible: true
+    required: true
+    default: "mn-oci-hol"
+    title: "Demo compartment name"
+
+  shape_limit:
+    type: string
+    visible: false
+    required: false
+
+  projector_image_source_uri:
+    type: string
+    visible: false
+    required: false
+
   ssh_public_key:
     type: oci:core:ssh:publickey
     additionalProps:

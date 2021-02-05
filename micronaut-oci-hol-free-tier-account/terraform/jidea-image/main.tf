@@ -3,9 +3,9 @@ terraform {
 }
 
 resource "oci_identity_compartment" "this" {
-  compartment_id = var.compartment_ocid
+  compartment_id = var.tenancy_ocid
   description = "Micronaut HOL Compartment"
-  name = "mn-oci-hol"
+  name = var.compartment_name
 }
 
 resource "oci_core_vcn" "this" {

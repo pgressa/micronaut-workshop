@@ -4,7 +4,11 @@ variable "compartment_ocid" {}
 variable "region" {}
 
 variable "use_free_tier" {
-  default = false
+  default = true
+}
+
+variable "compartment_name" {
+  default = "mn-oci-hol"
 }
 
 variable "projector_image_source_uri" {
@@ -34,10 +38,6 @@ variable "assign_public_ip" {
 }
 variable "vnic_name" {
   default = "micronaut-hol"
-}
-
-variable "vcn_display_name" {
-  default = "testVCN"
 }
 
 variable "attachment_type" {
@@ -78,4 +78,6 @@ variable "autonomous_database_is_dedicated" {
 
 provider "oci" {
   retry_duration_seconds = 120
+  tenancy_ocid = var.tenancy_ocid
+  region = var.region
 }

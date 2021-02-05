@@ -1,0 +1,3 @@
+[submodule "micronaut-oci-hol-free-tier-account/micronaut-oraclecloud-conference-workshop"]
+	path = micronaut-oci-hol-free-tier-account/micronaut-oraclecloud-conference-workshop
+	url = https://github.com/graemerocher/micronaut-oraclecloud-conference-workshop

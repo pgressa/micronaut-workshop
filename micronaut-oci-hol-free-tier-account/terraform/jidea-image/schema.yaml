@@ -11,6 +11,7 @@ variableGroups:
   - shape
   - ssh_public_key
   - compartment_name
+  - use_free_tier
 
 variables:
   compartment_name:
@@ -42,7 +43,7 @@ variables:
 
   use_free_tier:
     type: boolean
-    visible: false
+    visible: true
     required: false
     title: "Use Always Free Tier?"
     description: "Should this stack deploy on 'Always Free' resources? Uncheck if using a data center that does not have 'Always Free' capacity."

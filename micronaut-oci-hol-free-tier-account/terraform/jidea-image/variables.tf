@@ -4,7 +4,7 @@ variable "compartment_ocid" {}
 variable "region" {}
 
 variable "use_free_tier" {
-  default = true
+  default = false
 }
 
 variable "compartment_name" {

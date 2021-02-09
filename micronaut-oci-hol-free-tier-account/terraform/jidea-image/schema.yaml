@@ -8,10 +8,12 @@ variableGroups:
 - title: ${Messages.solutionsHub.optionalConfig()}
   visible: true  
   variables:
-  - shape
+
   - ssh_public_key
   - compartment_name
   - use_free_tier
+  - shape
+  - shape_limit
 
 variables:
   compartment_name:
@@ -23,8 +25,9 @@ variables:
 
   shape_limit:
     type: string
-    visible: false
-    required: false
+    visible: true
+    required: true
+    title: "Shape limit name"
 
   projector_image_source_uri:
     type: string
@@ -117,7 +120,6 @@ variables:
     required: true
     title: ${Messages.solutionsHub.solutions.computeInstance.variables.shape.title()}
     description: ${Messages.solutionsHub.solutions.computeInstance.variables.shape.description()}
-    default: "VM.Standard2.4"
     dependsOn:
       compartmentId: tenancy_ocid
 

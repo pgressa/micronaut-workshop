@@ -25,7 +25,7 @@ terraform-archive: clean
 	$(foreach TDIR, $(wildcard $(TERRAFORM_MODULE_PATHS)/*), $(call create_zip, $(TDIR)))
 
 terraform-projector-upload: terraform-archive
-	$(call upload_zip, micronaut-oci-hol-free-tier-account/terraform/jidea-image.zip, terraform/jidea-image.zip)
+	$(call upload_zip, micronaut-oci-hol-free-tier-account/terraform/jidea-image.zip, terraform/micronaut-hol-with-projector-v1.zip)
 
 clean:
 	find micronaut-oci-hol-free-tier-account/terraform -type f -name "*.zip" -exec rm -rf {} \;

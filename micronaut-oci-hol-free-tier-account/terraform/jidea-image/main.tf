@@ -125,7 +125,7 @@ data "oci_limits_limit_values" "ad_limits" {
 }
 
 locals {
-  availability_domain = [for limit in data.oci_limits_limit_values.ad_limits : limit.limit_values[0].availability_domain if limit.limit_values[0].value > 2]
+  availability_domain = [for limit in data.oci_limits_limit_values.ad_limits : limit.limit_values[0].availability_domain if limit.limit_values[0].value >= 2]
 }
 
 resource "oci_core_instance" "this" {

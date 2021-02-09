@@ -27,11 +27,11 @@ variable "boot_volume_size_in_gbs" {
 }
 
 variable "shape_limit" {
-  default = "standard2-core-count"
+  default = "standard-e2-core-count"
 }
 
 variable "shape" {
-  default = "VM.Standard2.2"
+  default = "VM.Standard.E2.2"
 }
 variable "assign_public_ip" {
   default = "true"

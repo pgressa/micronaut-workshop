@@ -3,6 +3,11 @@ output "projector_link" {
   value       = "https://${oci_core_instance.this.public_ip}"
 }
 
+output "instance_ip" {
+  description = "Instance public IP address"
+  value       = oci_core_instance.this.public_ip
+}
+
 output "atp_admin_password" {
   description = "Database admin password."
   value = random_string.autonomous_database_admin_password.result
@@ -31,13 +36,4 @@ output "atp_db_service_alias" {
 output "atp_db_ocid" {
   description = "Database id."
   value = oci_database_autonomous_database.autonomous_database.id
-}
-
-output "compartment_ocid" {
-  description = "Instance compartment"
-  value = oci_core_instance.this.compartment_id
-}
-
-output "region" {
-  value = var.region
 }

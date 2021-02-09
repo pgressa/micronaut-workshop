@@ -12,7 +12,7 @@ resource "oci_core_vcn" "this" {
   dns_label      = var.vcn_dns_label
   cidr_block     = var.vcn_cidr
   compartment_id = oci_identity_compartment.this.id
-  display_name   = var.vnic_name
+  display_name   = "${var.vnic_name}-${random_string.suffix.result}"
 }
 
 resource "oci_core_internet_gateway" "this" {
@@ -88,7 +88,7 @@ resource "oci_core_image" "projector_image" {
   compartment_id = var.tenancy_ocid
 
   #Optional
-  display_name = "Micronaut HOL"
+  display_name = "Micronaut Intelli JIdea Projector - ${random_string.suffix.result}"
 
   image_source_details {
     source_type = "objectStorageUri"
@@ -161,7 +161,7 @@ resource "oci_core_instance" "this" {
 resource "oci_identity_dynamic_group" "instance_resource_principals_dynamic_group" {
   compartment_id = var.tenancy_ocid
   matching_rule = "ANY {instance.compartment.id = '${oci_identity_compartment.this.id}'}"
-  name = "${var.dynamic_group_display_name}-group"
+  name = "${var.dynamic_group_display_name}-${random_string.suffix.result}-group"
   description = "${var.dynamic_group_display_name}-group"
 }
 
@@ -177,7 +177,7 @@ data "oci_identity_dynamic_groups" "instance_resource_principals_dynamic_group" 
 resource "oci_identity_policy" "instance_resource_principals_policy" {
   compartment_id = var.tenancy_ocid
   description = "${var.dynamic_group_display_name}-policy"
-  name = "${var.dynamic_group_display_name}-policy"
+  name = "${var.dynamic_group_display_name}-${random_string.suffix.result}-policy"
   statements = local.allow_dynamicgroup_manage_databases
 }
 
@@ -220,12 +220,12 @@ resource "oci_database_autonomous_database" "autonomous_database" {
   cpu_core_count           = "1"
   data_storage_size_in_tbs = "1"
   is_free_tier             = var.use_free_tier
-  db_name                  = var.autonomous_database_db_name
+  db_name                  = "${var.autonomous_database_db_name}${random_string.suffix.result}"
 
   #Optional
   //db_version                                     = data.oci_database_autonomous_db_versions.test_autonomous_db_versions.autonomous_db_versions.0.version
   db_workload                                    = var.autonomous_database_db_workload
-  display_name                                   = var.autonomous_database_display_name
+  display_name                                   = "${var.autonomous_database_display_name}${random_string.suffix.result}"
   license_model                                  = var.autonomous_database_license_model
   is_preview_version_with_service_terms_accepted = "false"
 }
@@ -252,4 +252,9 @@ resource "oci_database_autonomous_database_wallet" "autonomous_database_wallet" 
   autonomous_database_id = oci_database_autonomous_database.autonomous_database.id
   password               = random_string.autonomous_database_wallet_password.result
   base64_encode_content  = "true"
+}
+
+resource "random_string" "suffix" {
+  length  = 6
+  special = false
 }

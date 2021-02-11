@@ -55,8 +55,12 @@ sh /home/opc/setup_schema.sh > /home/opc/setup_schema.out
 echo  "Add prerouting rule to forward 8887 to 443 ..."
 iptables -t nat -A PREROUTING -p tcp -i ens3 --dport 443 -j DNAT --to-destination $(ifconfig ens3 | egrep -o 'inet [0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}' | cut -d' ' -f2):8887
 
-echo "Cleanup jidea config.."
+echo "Cleanup jidea config..."
 rm -fr /home/opc/example/.idea
 rm -rf /home/opc/.config/JetBrains/IdeaIC2020.3/workspace/*
 
+echo "Cleanup bash history..."
 rm -rf /home/opc/.bash_history
+
+echo "Cleanup authorized keys..."
+sed -i '/^ssh-rsa AAAAB3.*ssh-key-2020-11-24$/d' /home/opc/.ssh/authorized_keys

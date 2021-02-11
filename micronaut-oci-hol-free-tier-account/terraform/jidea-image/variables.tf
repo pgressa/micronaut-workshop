@@ -12,7 +12,7 @@ variable "compartment_name" {
 }
 
 variable "projector_image_source_uri" {
-  default = "https://objectstorage.us-phoenix-1.oraclecloud.com/p/UnzYQ6I9p-E6y23RxW9Ez2cDLR0Ns9rtpohktfo16MI0hlMmlSePgzd5Y3lD7GN-/n/cloudnative-devrel/b/workshop-images/o/jidea-workshop-image-v7"
+  default = "https://objectstorage.us-phoenix-1.oraclecloud.com/p/GM2geYGPG5O7J39b4Oei5H7l1t0CEeM46QOIjrHLJEdDiy-t6G65y25rxHtXFw6G/n/cloudnative-devrel/b/workshop-images/o/jidea-workshop-image-v8"
 }
 
 variable "instance_display_name" {

@@ -1,6 +1,5 @@
 *DS_Store
 .idea/*
-*.zip
 # config of terraform variables
 setup.sh
 # Local .terraform directories

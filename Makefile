@@ -21,6 +21,7 @@ terraform-projector: CMD ?= plan
 terraform-archive: clean
 	echo "Creating terraform archives"
 	$(foreach TDIR, $(wildcard $(TERRAFORM_MODULE_PATHS)/*), $(call create_zip, $(TDIR)))
+	mv $(TERRAFORM_MODULE_PATHS)/*zip archives/
 
 terraform-projector-upload: VERSION ?= X
 terraform-projector-upload: terraform-archive

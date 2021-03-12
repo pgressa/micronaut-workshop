@@ -15,8 +15,16 @@ variableGroups:
   variables:
   - shape
   - use_free_tier
+  - compartment_name
 
 variables:
+  compartment_name:
+    type: string
+    visible: true
+    required: true
+    default: "mn-oci-hol"
+    title: "Demo compartment name"
+
   ssh_public_key:
     type: oci:core:ssh:publickey
     additionalProps:
@@ -106,6 +114,12 @@ variables:
     default: "VM.Standard.E2.1.Micro"
     dependsOn:
       compartmentId: tenancy_ocid
+
+  shape_limit_name:
+    type: string
+    visible: false
+    required: true
+    title: "Shape limit name"
 
   dynamic_group_display_name:
     type: string

@@ -5,7 +5,7 @@ terraform {
 resource "oci_identity_compartment" "this" {
   compartment_id = var.compartment_ocid
   description = "Micronaut HOL Compartment"
-  name = "mn-oci-hol"
+  name = var.compartment_name
 }
 
 resource "oci_core_vcn" "this" {
@@ -49,7 +49,7 @@ resource "oci_core_security_list" "this" {
 }
 
 resource "oci_core_subnet" "subnet" {
-  availability_domain = local.availability_domain[0]
+  availability_domain = local.availability_domain
   cidr_block          = cidrsubnet(var.vcn_cidr, ceil(log(length(data.oci_identity_availability_domains.this.availability_domains) * 2, 2)), 0)
   display_name        = "MN-OCI Demo Subnet"
   dns_label           = "${var.subnet_dns_label}1"
@@ -69,7 +69,7 @@ data "oci_core_images" "this" {
   #Required
   compartment_id = oci_identity_compartment.this.id
   #Optional
-  shape = local.availability_domain[0] != null ? "VM.Standard.E2.1.Micro" : "VM.Standard.E2.1"
+  shape = local.availability_domains != null ? "VM.Standard.E2.1.Micro" : "VM.Standard.E2.1"
   state = "AVAILABLE"
 }
 
@@ -82,21 +82,25 @@ data "oci_limits_services" "services" {
   }
 }
 
-data "oci_limits_limit_values" "ad_limits" {
-  count          = length(data.oci_identity_availability_domains.this.availability_domains)
+
+data "oci_limits_resource_availability" "ad_limits_availability" {
+  #Required
   compartment_id = var.tenancy_ocid
+  limit_name = var.shape_limit_name
   service_name   = data.oci_limits_services.services.services.0.name
+  count          = length(data.oci_identity_availability_domains.this.availability_domains)
+
+  #Optional
   availability_domain = data.oci_identity_availability_domains.this.availability_domains[count.index].name
-  name                = "vm-standard2-4-count"
-  scope_type          = "AD"
 }
 
 locals {
-  availability_domain = [for limit in data.oci_limits_limit_values.ad_limits : limit.limit_values[0].availability_domain if limit.limit_values[0].value > 0]
+  availability_domains = [for limit in data.oci_limits_resource_availability.ad_limits_availability : limit.availability_domain if limit.available >= 2]
+  availability_domain = local.availability_domains != null ? local.availability_domains[0] : data.oci_identity_availability_domains.this.availability_domains[0].name
 }
 
 resource "oci_core_instance" "this" {
-  availability_domain  = local.availability_domain[0] != null ? local.availability_domain[0] : data.oci_identity_availability_domains.this.availability_domains[0].name
+  availability_domain  = local.availability_domain
   compartment_id       = oci_identity_compartment.this.id
   display_name         = var.instance_display_name
   shape                = var.shape

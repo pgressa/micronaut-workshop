@@ -7,6 +7,10 @@ variable "use_free_tier" {
   default = true
 }
 
+variable "compartment_name" {
+  default = "mn-oci-hol"
+}
+
 variable "instance_display_name" {
   default = "mn-oci-demo"
 }
@@ -19,6 +23,9 @@ variable "boot_volume_size_in_gbs" {
 }
 variable "shape" {
   default = "VM.Standard.E2.1.Micro"
+}
+variable "shape_limit_name" {
+  default = "standard-e2-micro-core-count"
 }
 variable "assign_public_ip" {
   default = "true"

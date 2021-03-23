@@ -140,8 +140,8 @@ data "oci_identity_dynamic_groups" "instance_resource_principals_dynamic_group" 
 
 resource "oci_identity_policy" "instance_resource_principals_policy" {
   compartment_id = var.tenancy_ocid
-  description = "${var.dynamic_group_display_name}-policy"
-  name = "${var.dynamic_group_display_name}-policy"
+  description = "${var.dynamic_group_display_name}${random_string.suffix.result}-policy"
+  name = "${var.dynamic_group_display_name}${random_string.suffix.result}-policy"
   statements = local.allow_dynamicgroup_manage_databases
 }
 

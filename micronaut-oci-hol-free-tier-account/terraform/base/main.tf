@@ -69,7 +69,7 @@ data "oci_core_images" "this" {
   #Required
   compartment_id = oci_identity_compartment.this.id
   #Optional
-  shape = local.availability_domains != null ? "VM.Standard.E2.1.Micro" : "VM.Standard.E2.1"
+  shape = length(local.availability_domains) > 0 ? "VM.Standard.E2.1.Micro" : "VM.Standard.E2.1"
   state = "AVAILABLE"
 }
 
@@ -96,7 +96,7 @@ data "oci_limits_resource_availability" "ad_limits_availability" {
 
 locals {
   availability_domains = [for limit in data.oci_limits_resource_availability.ad_limits_availability : limit.availability_domain if limit.available >= 2]
-  availability_domain = local.availability_domains != null ? local.availability_domains[0] : data.oci_identity_availability_domains.this.availability_domains[0].name
+  availability_domain = length(local.availability_domains) > 0 ? local.availability_domains[0] : data.oci_identity_availability_domains.this.availability_domains[0].name
 }
 
 resource "oci_core_instance" "this" {
@@ -117,7 +117,6 @@ resource "oci_core_instance" "this" {
   }
 
   source_details {
-    boot_volume_size_in_gbs = var.boot_volume_size_in_gbs
     source_type = "image"
     source_id   = data.oci_core_images.this.images[0].id
   }
@@ -126,8 +125,8 @@ resource "oci_core_instance" "this" {
 resource "oci_identity_dynamic_group" "instance_resource_principals_dynamic_group" {
   compartment_id = var.tenancy_ocid
   matching_rule = "ANY {instance.compartment.id = '${oci_identity_compartment.this.id}'}"
-  description = "${var.dynamic_group_display_name}-group"
-  name = "${var.dynamic_group_display_name}-group"
+  description = "${var.dynamic_group_display_name}${random_string.suffix.result}-group"
+  name = "${var.dynamic_group_display_name}${random_string.suffix.result}-group"
 }
 
 data "oci_identity_dynamic_groups" "instance_resource_principals_dynamic_group" {
@@ -185,7 +184,7 @@ resource "oci_database_autonomous_database" "autonomous_database" {
   cpu_core_count           = "1"
   data_storage_size_in_tbs = "1"
   is_free_tier             = var.use_free_tier
-  db_name                  = var.autonomous_database_db_name
+  db_name                  = "${var.autonomous_database_db_name}${random_string.suffix.result}"
 
   #Optional
   //db_version                                     = data.oci_database_autonomous_db_versions.test_autonomous_db_versions.autonomous_db_versions.0.version
@@ -211,6 +210,12 @@ resource "random_string" "autonomous_database_wallet_password" {
   min_upper   = 1
   min_special = 1
   override_special = "_"
+}
+
+
+resource "random_string" "suffix" {
+  length  = 6
+  special = false
 }
 
 resource "oci_database_autonomous_database_wallet" "autonomous_database_wallet" {

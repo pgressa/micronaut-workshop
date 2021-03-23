@@ -21,6 +21,8 @@ variable "dynamic_group_display_name" {
 variable "boot_volume_size_in_gbs" {
   default = 50
 }
+
+// VM.Standard.E2.1.Micro
 variable "shape" {
   default = "VM.Standard.E2.1.Micro"
 }

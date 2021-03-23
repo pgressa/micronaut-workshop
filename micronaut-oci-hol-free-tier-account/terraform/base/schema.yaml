@@ -111,7 +111,7 @@ variables:
     required: true
     title: ${Messages.solutionsHub.solutions.computeInstance.variables.shape.title()}
     description: ${Messages.solutionsHub.solutions.computeInstance.variables.shape.description()}
-    default: "VM.Standard.E2.1.Micro"
+    default: "VM.Standard.E2.1"
     dependsOn:
       compartmentId: tenancy_ocid
 
